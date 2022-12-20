@@ -12,6 +12,8 @@ docker-compose up -d --build
 # spark
 ``
 docker-compose up -d
+spark-submit --jars /usr/local/spark/resources/mysql-connector-java-8.0.30.jar --name csv_to_mysql /usr/local/spark/app/csv_to_mysql.py
+spark-submit --jars /usr/local/spark/resources/mysql-connector-java-8.0.30.jar,/usr/local/spark/resources/postgresql-42.5.1.jar --name mysql_to_postgres /usr/local/spark/app/mysql_to_postgres.py
 ``
 
 # kafka
