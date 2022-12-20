@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from airflow import DAG
-from airflow.operators.python import PythonOperator
+from airflow.operators.bash import BashOperator
 
 default_args = {
     'owner': 'ajihsan',
@@ -11,22 +11,8 @@ default_args = {
 
 dag = DAG('dag_batch_python', description = 'MongoDB to Postgres using Python', catchup = False, schedule_interval = None, default_args = default_args)
 
-s1 = PythonOperator(
-    task_id = "spark-csv",
-    application = "/usr/local/spark/app/csv_to_mysql.py",
-    name="csv to mysql",
-    jars="/usr/local/spark/resources/mysql-connector-java-8.0.30.jar",
-    conn_id = "spark_default",
+s1 = BashOperator(
+    task_id = "transform_mongo",
+    bash_command = "python3 /opt/airflow/scripts/transform_mongo_to_postgres.py",
     dag = dag
 )
-
-s2 = PythonOperator(
-    task_id = "spark-mysql",
-    application = "/usr/local/spark/app/mysql_to_postgres.py",
-    name="mysql to postgresql",
-    jars="/usr/local/spark/resources/mysql-connector-java-8.0.30.jar,/usr/local/spark/resources/postgresql-42.5.1.jar",
-    conn_id = "spark_default",
-    dag = dag
-)
-
-s1 >> s2
